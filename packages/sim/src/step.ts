@@ -13,6 +13,7 @@ import type { InputFrame } from '@kart-racer/shared';
 import * as tuning from './tuning';
 import type { Track } from './track';
 import { resolveCircleWall } from './track';
+import { checkLapComplete, isShortcut } from './checkpoints';
 
 export function step(state: SimState, inputs: InputFrame[], track?: Track): SimState {
   const newKarts: KartState[] = [];
@@ -21,7 +22,7 @@ export function step(state: SimState, inputs: InputFrame[], track?: Track): SimS
   for (let i = 0; i < playerCount; i++) {
     const kart = state.karts[i]!;
     const input = inputs[i]!;
-    newKarts.push(stepKart(kart, input, track));
+    newKarts.push(stepKart(kart, input, track, state.totalLaps));
   }
 
   // Kart-kart collision (deterministic pair order)
@@ -34,7 +35,7 @@ export function step(state: SimState, inputs: InputFrame[], track?: Track): SimS
   };
 }
 
-function stepKart(kart: KartState, input: InputFrame, track?: Track): KartState {
+function stepKart(kart: KartState, input: InputFrame, track?: Track, totalLaps?: number): KartState {
   // Start with a shallow copy
   const newKart: KartState = {
     ...kart,
@@ -115,6 +116,22 @@ function stepKart(kart: KartState, input: InputFrame, track?: Track): KartState 
         newKart.position = resolved.pos;
         newKart.velocity = resolved.vel;
       }
+    }
+  }
+
+  // --- Checkpoints & Laps ---
+  if (track && !newKart.finished) {
+    const oldPos = kart.position;
+    const newPos = newKart.position;
+
+    // Check for shortcut
+    if (isShortcut(oldPos, newPos, newKart.checkpoint, track)) {
+      // Reject shortcut: don't advance checkpoint
+    } else {
+      const result = checkLapComplete(oldPos, newPos, newKart.checkpoint, newKart.lap, track, totalLaps ?? 3);
+      newKart.checkpoint = result.checkpoint;
+      newKart.lap = result.lap;
+      newKart.finished = result.finished;
     }
   }
 
