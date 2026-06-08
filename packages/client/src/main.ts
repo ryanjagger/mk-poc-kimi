@@ -1,3 +1,3 @@
-import { CLIENT_VERSION } from './index';
+import { initRenderer } from './renderer';
 
-console.log('Kart Racer client', CLIENT_VERSION);
+initRenderer();
