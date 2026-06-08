@@ -7,7 +7,7 @@
 
 import * as fp from './fixed';
 import * as vec2 from './vec2';
-import { sin, cos } from './trig';
+import { sin, cos, fpSqrt } from './trig';
 import type { SimState, KartState } from './state';
 import type { InputFrame } from '@kart-racer/shared';
 import * as tuning from './tuning';
@@ -23,6 +23,9 @@ export function step(state: SimState, inputs: InputFrame[], track?: Track): SimS
     const input = inputs[i]!;
     newKarts.push(stepKart(kart, input, track));
   }
+
+  // Kart-kart collision (deterministic pair order)
+  resolveKartCollisions(newKarts);
 
   return {
     ...state,
@@ -116,4 +119,62 @@ function stepKart(kart: KartState, input: InputFrame, track?: Track): KartState 
   }
 
   return newKart;
+}
+
+/** Resolve kart-kart collisions. Modifies karts in-place. */
+export function resolveKartCollisions(karts: KartState[]): void {
+  const count = karts.length;
+  const diameterSq = fp.mul(
+    fp.add(tuning.KART_RADIUS, tuning.KART_RADIUS),
+    fp.add(tuning.KART_RADIUS, tuning.KART_RADIUS)
+  );
+
+  // Deterministic pair iteration: sorted by index
+  for (let i = 0; i < count; i++) {
+    for (let j = i + 1; j < count; j++) {
+      const a = karts[i]!;
+      const b = karts[j]!;
+
+      const dx = fp.sub(b.position.x, a.position.x);
+      const dy = fp.sub(b.position.y, a.position.y);
+      const distSq = fp.add(fp.mul(dx, dx), fp.mul(dy, dy));
+
+      if (fp.gt(distSq, diameterSq)) {
+        continue;
+      }
+
+      let dist: fp.Fixed;
+      let nx: fp.Fixed;
+      let ny: fp.Fixed;
+
+      if (distSq === fp.ZERO) {
+        // Exact overlap: push apart along x-axis
+        dist = fp.fromFloat(0.0001);
+        nx = fp.ONE;
+        ny = fp.ZERO;
+      } else {
+        dist = fpSqrt(distSq);
+        nx = fp.div(dx, dist);
+        ny = fp.div(dy, dist);
+      }
+
+      const overlap = fp.sub(fp.add(tuning.KART_RADIUS, tuning.KART_RADIUS), dist);
+
+      // Push apart symmetrically
+      const halfOverlap = fp.div(overlap, fp.fromInt(2));
+      a.position.x = fp.sub(a.position.x, fp.mul(nx, halfOverlap));
+      a.position.y = fp.sub(a.position.y, fp.mul(ny, halfOverlap));
+      b.position.x = fp.add(b.position.x, fp.mul(nx, halfOverlap));
+      b.position.y = fp.add(b.position.y, fp.mul(ny, halfOverlap));
+
+      // Separate velocity: remove normal component from each
+      const vaDot = fp.add(fp.mul(a.velocity.x, nx), fp.mul(a.velocity.y, ny));
+      const vbDot = fp.add(fp.mul(b.velocity.x, nx), fp.mul(b.velocity.y, ny));
+
+      a.velocity.x = fp.sub(a.velocity.x, fp.mul(nx, vaDot));
+      a.velocity.y = fp.sub(a.velocity.y, fp.mul(ny, vaDot));
+      b.velocity.x = fp.sub(b.velocity.x, fp.mul(nx, vbDot));
+      b.velocity.y = fp.sub(b.velocity.y, fp.mul(ny, vbDot));
+    }
+  }
 }
