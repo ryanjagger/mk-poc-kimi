@@ -11,15 +11,17 @@ import { sin, cos } from './trig';
 import type { SimState, KartState } from './state';
 import type { InputFrame } from '@kart-racer/shared';
 import * as tuning from './tuning';
+import type { Track } from './track';
+import { resolveCircleWall } from './track';
 
-export function step(state: SimState, inputs: InputFrame[]): SimState {
+export function step(state: SimState, inputs: InputFrame[], track?: Track): SimState {
   const newKarts: KartState[] = [];
   const playerCount = state.playerCount;
 
   for (let i = 0; i < playerCount; i++) {
     const kart = state.karts[i]!;
     const input = inputs[i]!;
-    newKarts.push(stepKart(kart, input));
+    newKarts.push(stepKart(kart, input, track));
   }
 
   return {
@@ -29,7 +31,7 @@ export function step(state: SimState, inputs: InputFrame[]): SimState {
   };
 }
 
-function stepKart(kart: KartState, input: InputFrame): KartState {
+function stepKart(kart: KartState, input: InputFrame, track?: Track): KartState {
   // Start with a shallow copy
   const newKart: KartState = {
     ...kart,
@@ -101,6 +103,17 @@ function stepKart(kart: KartState, input: InputFrame): KartState {
 
   // --- Movement ---
   newKart.position = vec2.add(newKart.position, newKart.velocity);
+
+  // --- Wall collision ---
+  if (track) {
+    for (const wall of track.walls) {
+      const resolved = resolveCircleWall(newKart.position, newKart.velocity, tuning.KART_RADIUS, wall);
+      if (resolved) {
+        newKart.position = resolved.pos;
+        newKart.velocity = resolved.vel;
+      }
+    }
+  }
 
   return newKart;
 }

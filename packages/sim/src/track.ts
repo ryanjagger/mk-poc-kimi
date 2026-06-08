@@ -7,6 +7,7 @@
 import * as fp from './fixed';
 import type { Fixed } from './fixed';
 import type { Vec2 } from './vec2';
+import { fpSqrt } from './trig';
 
 export interface Segment {
   a: Vec2;
@@ -135,4 +136,90 @@ export function segmentCrossed(oldPos: Vec2, newPos: Vec2, seg: Segment): boolea
     { a: oldPos, b: newPos },
     seg
   );
+}
+
+/** Resolve a circle against a wall segment. Returns corrected position and velocity. */
+export function resolveCircleWall(
+  pos: Vec2,
+  vel: Vec2,
+  radius: Fixed,
+  wall: Segment,
+): { pos: Vec2; vel: Vec2 } | null {
+  const distSq = distSqToSegment(pos, wall);
+  const rSq = fp.mul(radius, radius);
+
+  if (fp.gt(distSq, rSq)) {
+    return null; // No collision
+  }
+
+  // Find closest point on segment
+  const l2 = fp.add(
+    fp.mul(fp.sub(wall.b.x, wall.a.x), fp.sub(wall.b.x, wall.a.x)),
+    fp.mul(fp.sub(wall.b.y, wall.a.y), fp.sub(wall.b.y, wall.a.y))
+  );
+
+  let closest: Vec2;
+  if (l2 === fp.ZERO) {
+    closest = wall.a;
+  } else {
+    const t = fp.div(
+      fp.add(
+        fp.mul(fp.sub(pos.x, wall.a.x), fp.sub(wall.b.x, wall.a.x)),
+        fp.mul(fp.sub(pos.y, wall.a.y), fp.sub(wall.b.y, wall.a.y))
+      ),
+      l2
+    );
+    const clampedT = fp.clamp(t, fp.ZERO, fp.ONE);
+    closest = {
+      x: fp.add(wall.a.x, fp.mul(fp.sub(wall.b.x, wall.a.x), clampedT)),
+      y: fp.add(wall.a.y, fp.mul(fp.sub(wall.b.y, wall.a.y), clampedT)),
+    };
+  }
+
+  // Push vector from closest point to circle center
+  const dx = fp.sub(pos.x, closest.x);
+  const dy = fp.sub(pos.y, closest.y);
+  const dist = fpSqrt(fp.add(fp.mul(dx, dx), fp.mul(dy, dy)));
+
+  if (dist === fp.ZERO) {
+    // Center is exactly on the wall — push along wall normal
+    const wallDx = fp.sub(wall.b.x, wall.a.x);
+    const wallDy = fp.sub(wall.b.y, wall.a.y);
+    // Normal is (-wallDy, wallDx)
+    const normalX = fp.neg(wallDy);
+    const normalY = wallDx;
+    const normalLen = fpSqrt(fp.add(fp.mul(normalX, normalX), fp.mul(normalY, normalY)));
+    const pushX = fp.div(normalX, normalLen);
+    const pushY = fp.div(normalY, normalLen);
+    return {
+      pos: {
+        x: fp.add(pos.x, fp.mul(pushX, radius)),
+        y: fp.add(pos.y, fp.mul(pushY, radius)),
+      },
+      vel: { x: fp.ZERO, y: fp.ZERO },
+    };
+  }
+
+  // Push out by (radius - dist) along the normal
+  const pushFactor = fp.div(fp.sub(radius, dist), dist);
+  const pushX = fp.mul(dx, pushFactor);
+  const pushY = fp.mul(dy, pushFactor);
+
+  const newPos = {
+    x: fp.add(pos.x, pushX),
+    y: fp.add(pos.y, pushY),
+  };
+
+  // Reflect velocity: v' = v - 2 * (v·n) * n
+  // For arcade feel, just remove the normal component and keep tangent
+  const normalX = fp.div(dx, dist);
+  const normalY = fp.div(dy, dist);
+  const dot = fp.add(fp.mul(vel.x, normalX), fp.mul(vel.y, normalY));
+
+  const newVel = {
+    x: fp.sub(vel.x, fp.mul(dot, normalX)),
+    y: fp.sub(vel.y, fp.mul(dot, normalY)),
+  };
+
+  return { pos: newPos, vel: newVel };
 }
