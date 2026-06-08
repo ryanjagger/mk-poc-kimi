@@ -11,6 +11,31 @@
 import * as fp from './fixed';
 import type { Fixed } from './fixed';
 
+// --- fpSqrt ---
+
+/** Integer square root for positive numbers. */
+function isqrt(n: number): number {
+  if (n <= 0) return 0;
+  let x = n;
+  let y = (x + 1) >> 1;
+  while (y < x) {
+    x = y;
+    y = (x + (n / x | 0)) >> 1;
+  }
+  return x;
+}
+
+/** Fixed-point square root: sqrt(a) in Q16.16. */
+export function fpSqrt(a: Fixed): Fixed {
+  const raw = a | 0;
+  if (raw <= 0) return fp.ZERO;
+  // sqrt(raw / 65536) = sqrt(raw) / 256
+  // In Q16.16: sqrt(raw) * 256
+  return ((isqrt(raw) * 256) | 0) as Fixed;
+}
+
+// --- Trig LUT ---
+
 const ANGLE_BITS = 16;
 const ANGLE_MASK = (1 << ANGLE_BITS) - 1; // 65535
 const LUT_SIZE = 1024;
