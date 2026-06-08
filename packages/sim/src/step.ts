@@ -154,6 +154,9 @@ export function resolveKartCollisions(karts: KartState[]): void {
         ny = fp.ZERO;
       } else {
         dist = fpSqrt(distSq);
+        if (dist === fp.ZERO) {
+          continue;
+        }
         nx = fp.div(dx, dist);
         ny = fp.div(dy, dist);
       }
