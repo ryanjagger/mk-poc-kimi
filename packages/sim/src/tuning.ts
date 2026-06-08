@@ -6,7 +6,7 @@
 
 import * as fp from './fixed';
 
-export const ACCEL = fp.fromFloat(0.08);      // acceleration per tick
+export const ACCEL = fp.fromFloat(0.25);      // acceleration per tick
 export const BRAKE = fp.fromFloat(0.12);      // braking deceleration per tick
 export const REVERSE = fp.fromFloat(0.04);    // reverse acceleration per tick
 export const FRICTION = fp.fromFloat(0.02);   // natural friction per tick
