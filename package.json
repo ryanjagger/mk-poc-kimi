@@ -8,6 +8,7 @@
     "test": "vitest run",
     "dev": "pnpm --filter client dev",
     "build": "pnpm -r build",
+    "start": "pnpm --filter server start",
     "lint": "echo 'lint not configured yet'"
   },
   "devDependencies": {
