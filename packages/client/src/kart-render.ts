@@ -11,6 +11,7 @@ const kartMeshes = new Map<number, THREE.Group>();
 
 export function createKartMesh(playerIndex: number, scene: THREE.Scene): THREE.Group {
   const group = new THREE.Group();
+  group.name = `kart-${playerIndex}`;
 
   // Kart body
   const bodyGeo = new THREE.BoxGeometry(0.6, 0.3, 0.4);
