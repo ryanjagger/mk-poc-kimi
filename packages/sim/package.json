@@ -11,8 +11,11 @@
     }
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -b",
     "test": "vitest run"
+  },
+  "dependencies": {
+    "@kart-racer/shared": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.4.0",

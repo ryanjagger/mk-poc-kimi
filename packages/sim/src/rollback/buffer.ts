@@ -6,7 +6,6 @@
 
 import type { SimState } from '../state';
 import type { InputFrame } from '@kart-racer/shared';
-import { serialize, deserialize } from '../hash';
 
 export interface TickRecord {
   tick: number;

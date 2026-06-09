@@ -46,6 +46,36 @@ export const SyncMessage = z.object({
   tick: z.number().int().nonnegative(),
 });
 
+export const RoomCreatedMessage = z.object({
+  type: z.literal('roomCreated'),
+  roomCode: z.string(),
+});
+
+export const JoinedRoomMessage = z.object({
+  type: z.literal('joinedRoom'),
+  roomCode: z.string(),
+  playerIndex: z.number().int().nonnegative(),
+});
+
+export const RaceStartedMessage = z.object({
+  type: z.literal('raceStarted'),
+});
+
+export const PlayerJoinedMessage = z.object({
+  type: z.literal('playerJoined'),
+  playerIndex: z.number().int().nonnegative(),
+});
+
+export const PlayerReadyMessage = z.object({
+  type: z.literal('playerReady'),
+  playerIndex: z.number().int().nonnegative(),
+});
+
+export const ErrorMessage = z.object({
+  type: z.literal('error'),
+  message: z.string(),
+});
+
 export const ProtocolMessage = z.discriminatedUnion('type', [
   JoinRoomMessage,
   CreateRoomMessage,
@@ -54,6 +84,12 @@ export const ProtocolMessage = z.discriminatedUnion('type', [
   InputFrameMessage,
   HashReportMessage,
   SyncMessage,
+  RoomCreatedMessage,
+  JoinedRoomMessage,
+  RaceStartedMessage,
+  PlayerJoinedMessage,
+  PlayerReadyMessage,
+  ErrorMessage,
 ]);
 
 export type ProtocolMessage = z.infer<typeof ProtocolMessage>;
@@ -65,3 +101,9 @@ export type StartMessage = z.infer<typeof StartMessage>;
 export type InputFrameMessage = z.infer<typeof InputFrameMessage>;
 export type HashReportMessage = z.infer<typeof HashReportMessage>;
 export type SyncMessage = z.infer<typeof SyncMessage>;
+export type RoomCreatedMessage = z.infer<typeof RoomCreatedMessage>;
+export type JoinedRoomMessage = z.infer<typeof JoinedRoomMessage>;
+export type RaceStartedMessage = z.infer<typeof RaceStartedMessage>;
+export type PlayerJoinedMessage = z.infer<typeof PlayerJoinedMessage>;
+export type PlayerReadyMessage = z.infer<typeof PlayerReadyMessage>;
+export type ErrorMessage = z.infer<typeof ErrorMessage>;

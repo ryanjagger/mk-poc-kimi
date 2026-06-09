@@ -5,7 +5,6 @@
  */
 
 import * as fp from './fixed';
-import type { Fixed } from './fixed';
 import type { Vec2 } from './vec2';
 import type { PrngState } from './prng';
 

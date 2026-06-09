@@ -73,15 +73,21 @@ export function serialize(state: SimState): number[] {
 
 /** Deserialize from compact format. */
 export function deserialize(data: number[]): SimState {
-  const [tick, seed, playerCount, totalLaps, raceStarted, countdownTicks, kartCount] = data;
+  const tick = data[0]!;
+  const seed = data[1]!;
+  const playerCount = data[2]!;
+  const totalLaps = data[3]!;
+  const raceStarted = data[4]!;
+  const countdownTicks = data[5]!;
+  const kartCount = data[6]!;
   const karts: KartState[] = [];
   let offset = 7;
 
   for (let i = 0; i < kartCount; i++) {
     karts.push({
       playerIndex: data[offset++]!,
-      position: { x: data[offset++]!, y: data[offset++]! },
-      velocity: { x: data[offset++]!, y: data[offset++]! },
+      position: { x: data[offset++]! as number, y: data[offset++]! as number } as any,
+      velocity: { x: data[offset++]! as number, y: data[offset++]! as number } as any,
       heading: data[offset++]!,
       driftCharge: data[offset++]!,
       boostTimer: data[offset++]!,

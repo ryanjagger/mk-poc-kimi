@@ -70,6 +70,10 @@ importers:
         version: 5.9.3
 
   packages/sim:
+    dependencies:
+      '@kart-racer/shared':
+        specifier: workspace:*
+        version: link:../shared
     devDependencies:
       typescript:
         specifier: ^5.4.0

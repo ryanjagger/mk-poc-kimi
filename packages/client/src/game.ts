@@ -12,12 +12,10 @@ import {
   toFloat,
   type SimState,
 } from '@kart-racer/sim';
-import * as fp from '@kart-racer/sim';
-import type { InputFrame } from '@kart-racer/shared';
 import { getInputFrame } from './input';
-import { createTrackMeshes, createKartMesh, updateKartMesh } from './kart-render';
+import { createKartMesh } from './kart-render';
+import { createTrackMeshes } from './track-render';
 import { getScene, getCamera } from './renderer';
-import * as THREE from 'three';
 
 const SIM_FPS = 60;
 const SIM_DT = 1000 / SIM_FPS;

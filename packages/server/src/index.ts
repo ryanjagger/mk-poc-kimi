@@ -151,7 +151,7 @@ function handleMessage(ws: WebSocket, msg: import('@kart-racer/shared').Protocol
   }
 }
 
-function joinRoom(ws: WebSocket, room: Room, playerName: string): void {
+function joinRoom(ws: WebSocket, room: Room, _playerName: string): void {
   const playerIndex = room.clients.length;
   const client: Client = { ws, playerIndex, roomCode: room.code, ready: false };
   room.clients.push(client);
