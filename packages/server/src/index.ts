@@ -1,12 +1,22 @@
 /**
- * WebSocket relay server.
+ * WebSocket relay server + static file serving.
  *
  * Relays inputs only, never world state.
  * Validates every inbound message with Zod at the boundary.
+ * Also serves the client static files.
  */
 
+import { createServer as createHttpServer } from 'http';
+import { readFileSync, existsSync } from 'fs';
+import { resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { WebSocketServer, WebSocket } from 'ws';
 import { ProtocolMessage } from '@kart-racer/shared';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// Path to client dist (relative from server dist)
+const CLIENT_DIST = resolve(__dirname, '../../client/dist');
 
 interface Client {
   ws: WebSocket;
@@ -40,8 +50,48 @@ function broadcast(room: Room, message: object, exclude?: Client): void {
   }
 }
 
-export function createServer(port: number = 3000): WebSocketServer {
-  const wss = new WebSocketServer({ port });
+function getMimeType(path: string): string {
+  if (path.endsWith('.html')) return 'text/html';
+  if (path.endsWith('.js')) return 'application/javascript';
+  if (path.endsWith('.css')) return 'text/css';
+  if (path.endsWith('.json')) return 'application/json';
+  return 'application/octet-stream';
+}
+
+function serveStatic(reqPath: string): { status: number; body: string | Buffer; contentType: string } {
+  // Security: prevent directory traversal
+  const safePath = reqPath.replace(/\.\./g, '');
+  let filePath = resolve(CLIENT_DIST, safePath);
+  
+  // Default to index.html
+  if (safePath === '/' || safePath === '') {
+    filePath = resolve(CLIENT_DIST, 'index.html');
+  }
+
+  if (!existsSync(filePath)) {
+    // Try index.html for SPA routes
+    filePath = resolve(CLIENT_DIST, 'index.html');
+    if (!existsSync(filePath)) {
+      return { status: 404, body: 'Not Found', contentType: 'text/plain' };
+    }
+  }
+
+  try {
+    const body = readFileSync(filePath);
+    return { status: 200, body, contentType: getMimeType(filePath) };
+  } catch {
+    return { status: 500, body: 'Internal Server Error', contentType: 'text/plain' };
+  }
+}
+
+export function createServer(port: number = 3000): ReturnType<typeof createHttpServer> {
+  const httpServer = createHttpServer((req, res) => {
+    const result = serveStatic(req.url || '/');
+    res.writeHead(result.status, { 'Content-Type': result.contentType });
+    res.end(result.body);
+  });
+
+  const wss = new WebSocketServer({ server: httpServer });
 
   wss.on('connection', (ws) => {
     ws.on('message', (data) => {
@@ -67,8 +117,11 @@ export function createServer(port: number = 3000): WebSocketServer {
     });
   });
 
-  console.log(`Relay server listening on port ${port}`);
-  return wss;
+  httpServer.listen(port, () => {
+    console.log(`Server listening on port ${port}`);
+  });
+
+  return httpServer;
 }
 
 function handleMessage(ws: WebSocket, msg: import('@kart-racer/shared').ProtocolMessage): void {

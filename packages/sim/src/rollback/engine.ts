@@ -111,6 +111,12 @@ export class RollbackEngine {
     }
 
     const rollbackDistance = latestTick - oldestCorrected;
+
+    // Update the buffer with corrected records
+    for (const record of correctedRecords) {
+      this.buffer.push(record);
+    }
+
     return { state, resimulatedTicks: resimulated, rollbackDistance };
   }
 }
