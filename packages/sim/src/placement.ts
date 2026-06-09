@@ -2,7 +2,7 @@
  * Race finish detection and placement ordering.
  */
 
-import type { KartState } from './state';
+import type { KartState } from './state.js';
 
 export function computePlacements(karts: KartState[]): KartState[] {
   // Sort by: finished first, then lap descending, then checkpoint descending, then tick ascending

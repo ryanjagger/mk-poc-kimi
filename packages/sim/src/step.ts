@@ -5,15 +5,15 @@
  * Deterministic: same seed + same inputs = identical output.
  */
 
-import * as fp from './fixed';
-import * as vec2 from './vec2';
-import { sin, cos, fpSqrt } from './trig';
-import type { SimState, KartState } from './state';
+import * as fp from './fixed.js';
+import * as vec2 from './vec2.js';
+import { sin, cos, fpSqrt } from './trig.js';
+import type { SimState, KartState } from './state.js';
 import type { InputFrame } from '@kart-racer/shared';
-import * as tuning from './tuning';
-import type { Track } from './track';
-import { resolveCircleWall } from './track';
-import { checkLapComplete, isShortcut } from './checkpoints';
+import * as tuning from './tuning.js';
+import type { Track } from './track.js';
+import { resolveCircleWall } from './track.js';
+import { checkLapComplete, isShortcut } from './checkpoints.js';
 
 export function step(state: SimState, inputs: InputFrame[], track?: Track): SimState {
   const newKarts: KartState[] = [];

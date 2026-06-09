@@ -4,9 +4,9 @@
  * Deterministic advancement using fixed-point segment crossing.
  */
 
-import type { Vec2 } from './vec2';
-import type { Track } from './track';
-import { segmentCrossed } from './track';
+import type { Vec2 } from './vec2.js';
+import type { Track } from './track.js';
+import { segmentCrossed } from './track.js';
 
 export function updateCheckpoint(
   oldPos: Vec2,

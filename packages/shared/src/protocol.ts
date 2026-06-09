@@ -5,7 +5,7 @@
  */
 
 import { z } from 'zod';
-import { InputFrameSchema } from './input';
+import { InputFrameSchema } from './input.js';
 
 export const JoinRoomMessage = z.object({
   type: z.literal('joinRoom'),

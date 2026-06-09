@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getMetrics, recordMetrics, getBudgetReadout } from './metrics';
+import { getMetrics, recordMetrics, getBudgetReadout } from './metrics.js';
 
 describe('Metrics', () => {
   it('records and retrieves metrics', () => {

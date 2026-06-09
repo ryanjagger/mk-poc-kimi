@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { RollbackEngine } from './engine';
+import { RollbackEngine } from './engine.js';
 import { createSimState, createKartState } from '../state';
 import { createOvalTrack } from '../track';
 import type { InputFrame } from '@kart-racer/shared';

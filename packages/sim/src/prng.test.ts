@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Prng } from './prng';
+import { Prng } from './prng.js';
 
 describe('PRNG', () => {
   it('same seed produces identical sequence', () => {

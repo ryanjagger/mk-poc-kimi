@@ -8,8 +8,8 @@
  * Values are looked up with linear interpolation for smoothness.
  */
 
-import * as fp from './fixed';
-import type { Fixed } from './fixed';
+import * as fp from './fixed.js';
+import type { Fixed } from './fixed.js';
 
 // --- fpSqrt ---
 

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import * as trig from './trig';
-import * as fp from './fixed';
+import * as trig from './trig.js';
+import * as fp from './fixed.js';
 
 const F = fp.fromFloat;
 

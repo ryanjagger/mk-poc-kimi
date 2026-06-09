@@ -5,7 +5,7 @@
  * All fields are hashed in stable order. No JSON key reordering.
  */
 
-import type { SimState, KartState } from './state';
+import type { SimState, KartState } from './state.js';
 
 /** Simple deterministic hash (FNV-1a 32-bit) over integers. */
 export function hashState(state: SimState): number {

@@ -4,9 +4,9 @@
  * All fields are integers / Fixed-point. No floats, no platform deps.
  */
 
-import * as fp from './fixed';
-import type { Vec2 } from './vec2';
-import type { PrngState } from './prng';
+import * as fp from './fixed.js';
+import type { Vec2 } from './vec2.js';
+import type { PrngState } from './prng.js';
 
 export interface KartState {
   /** Player index (0..N-1), fixed iteration order. */

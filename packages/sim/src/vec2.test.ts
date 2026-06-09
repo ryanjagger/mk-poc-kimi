@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import * as vec2 from './vec2';
-import * as fp from './fixed';
+import * as vec2 from './vec2.js';
+import * as fp from './fixed.js';
 
 const F = fp.fromFloat;
 const V = vec2.vec2;

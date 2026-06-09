@@ -4,7 +4,7 @@
  * All values are Fixed Q16.16.
  */
 
-import * as fp from './fixed';
+import * as fp from './fixed.js';
 
 export const ACCEL = fp.fromFloat(0.25);      // acceleration per tick
 export const BRAKE = fp.fromFloat(0.12);      // braking deceleration per tick

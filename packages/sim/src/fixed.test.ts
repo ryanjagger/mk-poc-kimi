@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import * as fp from './fixed';
+import * as fp from './fixed.js';
 
 const F = fp.fromFloat;
 

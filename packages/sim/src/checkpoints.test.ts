@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { createOvalTrack } from './track';
-import { checkLapComplete, isShortcut } from './checkpoints';
-import * as fp from './fixed';
-import * as vec2 from './vec2';
+import { createOvalTrack } from './track.js';
+import { checkLapComplete, isShortcut } from './checkpoints.js';
+import * as fp from './fixed.js';
+import * as vec2 from './vec2.js';
 
 const V = vec2.vec2;
 

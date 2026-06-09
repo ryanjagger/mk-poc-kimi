@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { createSimState, createKartState } from './state';
-import { hashState, serialize, deserialize } from './hash';
-import * as fp from './fixed';
-import * as vec2 from './vec2';
+import { createSimState, createKartState } from './state.js';
+import { hashState, serialize, deserialize } from './hash.js';
+import * as fp from './fixed.js';
+import * as vec2 from './vec2.js';
 
 const V = vec2.vec2;
 

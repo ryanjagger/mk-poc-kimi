@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { WebSocket } from 'ws';
-import { createServer } from './index';
+import { createServer } from './index.js';
 
 describe('Server relay', () => {
   it('relays input frames between two clients', async () => {

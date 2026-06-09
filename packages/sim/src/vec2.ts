@@ -2,10 +2,10 @@
  * 2D vector math using fixed-point Q16.16.
  */
 
-import * as fp from './fixed';
-import type { Fixed } from './fixed';
-import { sin, cos } from './trig';
-import { fpSqrt } from './trig';
+import * as fp from './fixed.js';
+import type { Fixed } from './fixed.js';
+import { sin, cos } from './trig.js';
+import { fpSqrt } from './trig.js';
 
 export interface Vec2 {
   x: Fixed;

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { computePlacements, allFinished } from './placement';
-import type { KartState } from './state';
+import { computePlacements, allFinished } from './placement.js';
+import type { KartState } from './state.js';
 
 describe('Placement', () => {
   it('orders finished karts by player index on ties', () => {

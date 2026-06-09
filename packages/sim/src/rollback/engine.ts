@@ -9,7 +9,7 @@ import type { SimState } from '../state';
 import type { InputFrame } from '@kart-racer/shared';
 import { step } from '../step';
 import type { Track } from '../track';
-import { RingBuffer } from './buffer';
+import { RingBuffer } from './buffer.js';
 
 export interface RollbackResult {
   state: SimState;

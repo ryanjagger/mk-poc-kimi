@@ -4,10 +4,10 @@
  * Pure data + geometry helpers. No rendering.
  */
 
-import * as fp from './fixed';
-import type { Fixed } from './fixed';
-import type { Vec2 } from './vec2';
-import { fpSqrt } from './trig';
+import * as fp from './fixed.js';
+import type { Fixed } from './fixed.js';
+import type { Vec2 } from './vec2.js';
+import { fpSqrt } from './trig.js';
 
 export interface Segment {
   a: Vec2;

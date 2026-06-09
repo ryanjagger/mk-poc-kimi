@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { RingBuffer } from './buffer';
+import { RingBuffer } from './buffer.js';
 import { createSimState, createKartState } from '../state';
 import * as fp from '../fixed';
 import * as vec2 from '../vec2';

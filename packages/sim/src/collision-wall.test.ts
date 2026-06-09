@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { createSimState, createKartState } from './state';
-import { step } from './step';
+import { createSimState, createKartState } from './state.js';
+import { step } from './step.js';
 import type { InputFrame } from '@kart-racer/shared';
-import * as fp from './fixed';
-import * as vec2 from './vec2';
-import { createOvalTrack } from './track';
+import * as fp from './fixed.js';
+import * as vec2 from './vec2.js';
+import { createOvalTrack } from './track.js';
 
 const V = vec2.vec2;
 

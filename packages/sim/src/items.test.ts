@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { spawnItem, checkPickup } from './items';
-import { Prng } from './prng';
-import * as fp from './fixed';
-import * as vec2 from './vec2';
+import { spawnItem, checkPickup } from './items.js';
+import { Prng } from './prng.js';
+import * as fp from './fixed.js';
+import * as vec2 from './vec2.js';
 
 describe('Items', () => {
   it('spawn is deterministic from seed', () => {
